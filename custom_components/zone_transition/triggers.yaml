@@ -1,0 +1,15 @@
+moved:
+  target:
+    entity:
+      domain: person
+  fields:
+    from_zone:
+      required: false
+      selector:
+        entity:
+          domain: zone
+    to_zone:
+      required: false
+      selector:
+        entity:
+          domain: zone

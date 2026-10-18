@@ -2,33 +2,37 @@
   "config": {
     "step": {
       "user": {
-        "title": "Track zone transitions",
-        "description": "Pick the person whose zone history should be tracked.",
-        "data": {
-          "person": "Person"
-        }
+        "title": "Zone Transition",
+        "description": "Tracks the zone history of every person and adds a \"Person moved between zones\" automation trigger."
       }
     },
     "abort": {
-      "already_configured": "This person is already being tracked."
-    }
-  },
-  "device_automation": {
-    "trigger_type": {
-      "zone_transition": "Moved from one zone to another"
-    },
-    "extra_fields": {
-      "from_zone": "From zone (optional)",
-      "to_zone": "To zone (optional)"
+      "single_instance_allowed": "Zone Transition is already set up."
     }
   },
   "entity": {
     "sensor": {
       "last_known_zone": {
-        "name": "Last known zone"
+        "name": "{person} last known zone"
       },
       "previous_zone": {
-        "name": "Previous zone"
+        "name": "{person} previous zone"
+      }
+    }
+  },
+  "triggers": {
+    "moved": {
+      "name": "Person moved between zones",
+      "description": "Triggers when a person arrives in a zone coming from a different zone. Time spent outside any zone is skipped.",
+      "fields": {
+        "from_zone": {
+          "name": "From zone",
+          "description": "Only trigger when coming from this zone. Leave empty for any zone."
+        },
+        "to_zone": {
+          "name": "To zone",
+          "description": "Only trigger when arriving in this zone. Leave empty for any zone."
+        }
       }
     }
   }

@@ -3,11 +3,15 @@
   "name": "Zone Transition",
   "codeowners": [],
   "config_flow": true,
-  "dependencies": ["person", "zone"],
+  "dependencies": [
+    "person",
+    "zone"
+  ],
   "documentation": "https://github.com/jefortin/ha-zone-transition",
   "integration_type": "helper",
   "iot_class": "calculated",
   "issue_tracker": "https://github.com/jefortin/ha-zone-transition/issues",
   "requirements": [],
-  "version": "0.1.0"
+  "version": "0.2.0",
+  "single_config_entry": true
 }

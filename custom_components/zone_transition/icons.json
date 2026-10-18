@@ -1,0 +1,7 @@
+{
+  "triggers": {
+    "moved": {
+      "trigger": "mdi:map-marker-path"
+    }
+  }
+}
