@@ -53,9 +53,6 @@ class PersonHistory:
         self.arrived_at = _parse_dt(data.get("arrived_at"))
         self.last_left_zone: str | None = data.get("last_left_zone")
         self.left_at = _parse_dt(data.get("left_at"))
-        self.previous_zone: str | None = data.get("previous_zone")
-        # previous_zone before the last departure, restored on a round trip.
-        self.previous_before_leave: str | None = data.get("previous_before_leave")
 
     @property
     def last_known_zone(self) -> str | None:
@@ -68,8 +65,6 @@ class PersonHistory:
             "arrived_at": _format_dt(self.arrived_at),
             "last_left_zone": self.last_left_zone,
             "left_at": _format_dt(self.left_at),
-            "previous_zone": self.previous_zone,
-            "previous_before_leave": self.previous_before_leave,
         }
 
 
@@ -143,23 +138,20 @@ class ZoneTransitionManager:
         if person.current_zone is not None:
             person.last_left_zone = person.current_zone
             person.left_at = now
-            person.previous_before_leave = person.previous_zone
-            person.previous_zone = person.current_zone
 
         person.current_zone = zone
         if zone is not None:
             origin = person.last_left_zone
             person.arrived_at = now
-            if origin == zone:
-                # Back where they left from: nothing moved, undo the departure.
-                person.previous_zone = person.previous_before_leave
-            elif origin is not None:
-                self._fire_transition(person, state)
+            if origin is not None and origin != zone:
+                self._fire_transition(person, origin, state)
 
         self._store.async_delay_save(self._data_to_save, 1)
         async_dispatcher_send(self.hass, signal_updated(person.person_id))
 
-    def _fire_transition(self, person: PersonHistory, state: State) -> None:
+    def _fire_transition(
+        self, person: PersonHistory, from_zone: str, state: State
+    ) -> None:
         travel_seconds = (
             (person.arrived_at - person.left_at).total_seconds()
             if person.arrived_at and person.left_at
@@ -169,8 +161,8 @@ class ZoneTransitionManager:
             EVENT_ZONE_TRANSITION,
             {
                 "entity_id": person.person_id,
-                "from_zone": person.previous_zone,
-                "from_zone_name": self.zone_name(person.previous_zone),
+                "from_zone": from_zone,
+                "from_zone_name": self.zone_name(from_zone),
                 "to_zone": person.current_zone,
                 "to_zone_name": self.zone_name(person.current_zone),
                 "left_at": _format_dt(person.left_at),

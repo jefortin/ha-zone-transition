@@ -20,12 +20,11 @@ added later.
 
 Manual install: copy `custom_components/zone_transition` into your `config/custom_components/`.
 
-## Sensors (per person)
+## Sensor (per person)
 
 | Sensor | State | Attributes |
 |---|---|---|
 | **`<Person>` last known zone** | Zone the person is in, or the last one they were in while away | `person`, `zone`, `in_zone`, `arrived_at`, `left_at` |
-| **`<Person>` previous zone** | Zone they were in before the current one; while away, the zone they just left (a round trip back to the same zone does not change it) | `person`, `zone` |
 
 History is saved to disk, so it survives restarts.
 

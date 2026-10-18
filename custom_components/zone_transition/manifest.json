@@ -12,6 +12,6 @@
   "iot_class": "calculated",
   "issue_tracker": "https://github.com/jefortin/ha-zone-transition/issues",
   "requirements": [],
-  "version": "0.2.0",
+  "version": "0.3.0",
   "single_config_entry": true
 }

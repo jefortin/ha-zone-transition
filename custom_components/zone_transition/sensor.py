@@ -6,6 +6,7 @@ from typing import Any
 
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -21,12 +22,16 @@ async def async_setup_entry(
 ) -> None:
     manager = entry.runtime_data
 
+    # The "previous zone" sensor was removed in 0.3.0.
+    registry = er.async_get(hass)
+    for entity in er.async_entries_for_config_entry(registry, entry.entry_id):
+        if entity.unique_id.endswith("_previous_zone"):
+            registry.async_remove(entity.entity_id)
+
     @callback
     def _add_person(person_id: str) -> None:
         person = manager.people[person_id]
-        async_add_entities(
-            [LastKnownZoneSensor(manager, person), PreviousZoneSensor(manager, person)]
-        )
+        async_add_entities([LastKnownZoneSensor(manager, person)])
 
     for person_id in manager.people:
         _add_person(person_id)
@@ -77,16 +82,3 @@ class LastKnownZoneSensor(_ZoneSensorBase):
             "left_at": None if p.current_zone else p.left_at,
         }
 
-
-class PreviousZoneSensor(_ZoneSensorBase):
-    """The zone the person was in before their last known zone."""
-
-    _attr_translation_key = "previous_zone"
-
-    @property
-    def native_value(self) -> str | None:
-        return self.manager.zone_name(self.person.previous_zone)
-
-    @property
-    def extra_state_attributes(self) -> dict[str, Any]:
-        return {"person": self.person.person_id, "zone": self.person.previous_zone}

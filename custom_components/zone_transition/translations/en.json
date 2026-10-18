@@ -14,9 +14,6 @@
     "sensor": {
       "last_known_zone": {
         "name": "{person} last known zone"
-      },
-      "previous_zone": {
-        "name": "{person} previous zone"
       }
     }
   },
