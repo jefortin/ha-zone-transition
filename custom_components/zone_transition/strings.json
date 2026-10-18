@@ -1,0 +1,35 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Track zone transitions",
+        "description": "Pick the person whose zone history should be tracked.",
+        "data": {
+          "person": "Person"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "This person is already being tracked."
+    }
+  },
+  "device_automation": {
+    "trigger_type": {
+      "zone_transition": "Moved from one zone to another"
+    },
+    "extra_fields": {
+      "from_zone": "From zone (optional)",
+      "to_zone": "To zone (optional)"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "last_known_zone": {
+        "name": "Last known zone"
+      },
+      "previous_zone": {
+        "name": "Previous zone"
+      }
+    }
+  }
+}
